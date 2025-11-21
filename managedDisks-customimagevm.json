@@ -341,6 +341,13 @@
         "description": "Specifies whether vTPM (Virtual Trusted Platform Module) should be enabled on the virtual machine."
       },
       "defaultValue": false
+    },
+    "encryptionAtHost": {
+      "type": "bool",
+      "metadata": {
+        "description": "Specifies whether encryption at host should be enabled on the virtual machine."
+      },
+      "defaultValue": false
     }
   },
   "variables": {
@@ -390,6 +397,7 @@
     },
     "customConfigurationParameter": "[if(empty(parameters('customConfigurationParameterUrl')), variables('postDeploymentCustomConfigurationTemplateProperty'), union(variables('postDeploymentCustomConfigurationTemplateProperty'), variables('postDeploymentCustomConfigurationParameterProperty')))]",
     "securityProfile": {
+      "encryptionAtHost": "[parameters('encryptionAtHost')]",
       "uefiSettings": {
         "secureBootEnabled": "[parameters('secureBoot')]",
         "vTpmEnabled": "[parameters('vTPM')]"
