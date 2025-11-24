@@ -376,9 +376,11 @@
       "vmIdentityTypeProperty": {
         "type": "[variables('vmIdentityType')]"
       },
+      "isUserAssignedIdentityResourceId": "[startsWith(parameters('userAssignedIdentity'), '/subscriptions/')]",
+      "userAssignedIdentityResourceId": "[if(variables('isUserAssignedIdentityResourceId'), parameters('userAssignedIdentity'), resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',parameters('userAssignedIdentity')))]",
       "vmUserAssignedIdentityProperty": {
         "userAssignedIdentities": {
-          "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',parameters('userAssignedIdentity'))]": {}
+          "[variables('userAssignedIdentityResourceId')]": {}
         }
       },
       "vmIdentity": "[if(not(empty(parameters('userAssignedIdentity'))), union(variables('vmIdentityTypeProperty'), variables('vmUserAssignedIdentityProperty')), variables('vmIdentityTypeProperty'))]",
