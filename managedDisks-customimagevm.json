@@ -406,6 +406,9 @@
       },
       "securityType": "[parameters('securityType')]"
     },
+    "encryptionAtHostProfile": {
+      "encryptionAtHost": "[parameters('encryptionAtHost')]"
+    },
     "countOfSelectedAZ":"[length(parameters('availabilityZones'))]" 
   },
   "resources": [
@@ -490,7 +493,7 @@
           "adminUsername": "[variables('vmAdministratorUsername')]",
           "adminPassword": "[variables('vmAdministratorPassword')]"
         },
-        "securityProfile": "[if(equals(parameters('securityType'), 'TrustedLaunch'), variables('securityProfile'), json('null'))]",
+        "securityProfile": "[if(equals(parameters('securityType'), 'TrustedLaunch'), variables('securityProfile'), if(parameters('encryptionAtHost'), variables('encryptionAtHostProfile'), json('null')))]",
         "storageProfile": {
           "osDisk": {
             "createOption": "FromImage",
