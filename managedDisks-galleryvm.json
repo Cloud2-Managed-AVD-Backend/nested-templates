@@ -90,6 +90,13 @@
           "description": "The VM disk type for the VM: HDD or SSD."
         }
       },
+      "rdshVmDiskTier": {
+        "type": "string",
+        "metadata": {
+          "description": "The performance tier for the managed OS disk (e.g. P10, P20, P30). Leave empty to use the size-based default tier."
+        },
+        "defaultValue": ""
+      },
       "rdshVmSize": {
         "type": "string",
         "metadata": {
@@ -354,6 +361,14 @@
       "emptyArray": [],
       "domain": "[if(equals(parameters('domain'), ''), last(split(parameters('administratorAccountUsername'), '@')), parameters('domain'))]",
       "storageAccountType": "[parameters('rdshVMDiskType')]",
+      "managedDiskWithTier": {
+        "storageAccountType": "[variables('storageAccountType')]",
+        "tier": "[parameters('rdshVmDiskTier')]"
+      },
+      "managedDiskWithoutTier": {
+        "storageAccountType": "[variables('storageAccountType')]"
+      },
+      "managedDiskConfig": "[if(empty(parameters('rdshVmDiskTier')), variables('managedDiskWithoutTier'), variables('managedDiskWithTier'))]",
       "newNsgName": "[concat(parameters('rdshPrefix'), 'nsg-', parameters('_guidValue'))]",
       "newNsgDeploymentName": "[concat('NSG-linkedTemplate-', parameters('_guidValue'))]",
       "nsgId": "[if(parameters('createNetworkSecurityGroup'), resourceId('Microsoft.Network/networkSecurityGroups', variables('newNsgName')), parameters('networkSecurityGroupId'))]",
@@ -503,9 +518,7 @@
             "osDisk": {
               "createOption": "FromImage",
               "diskSizeGB": "[if(equals(parameters('rdshVmDiskSizeGB'), 0), json('null'), parameters('rdshVmDiskSizeGB'))]",
-              "managedDisk": {
-                "storageAccountType": "[variables('storageAccountType')]"
-              }
+              "managedDisk": "[variables('managedDiskConfig')]"
             }
           },
           "networkProfile": {
