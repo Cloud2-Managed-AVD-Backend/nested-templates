@@ -18,7 +18,8 @@
       "allowedValues": [
         "None",
         "AvailabilitySet",
-        "AvailabilityZone"
+        "AvailabilityZone",
+        "Automatic"
       ]
     },
     "availabilitySetName": {
@@ -483,7 +484,7 @@
       ]
     },
     {
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-11-01",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[concat(parameters('rdshPrefix'), add(copyindex(), parameters('vmInitialNumber')))]",
       "location": "[parameters('location')]",
@@ -530,7 +531,8 @@
         },
         "licenseType": "Windows_Client"
       },
-      "zones": "[if(equals(parameters('availabilityOption'), 'AvailabilityZone'), array(parameters('availabilityZones')[mod(copyIndex('rdsh-vm-loop'),variables('countOfSelectedAZ'))]), variables('emptyArray'))]"
+      "zones": "[if(equals(parameters('availabilityOption'), 'AvailabilityZone'), array(parameters('availabilityZones')[mod(copyIndex('rdsh-vm-loop'),variables('countOfSelectedAZ'))]), variables('emptyArray'))]",
+      "placement": "[if(equals(parameters('availabilityOption'), 'Automatic'), createObject('zonePlacementPolicy', 'Any'), json('null'))]"
     },
     {
       "apiVersion": "2021-07-01",
